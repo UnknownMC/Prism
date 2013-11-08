@@ -46,6 +46,9 @@ public class QueryBuilder {
 		// Ask current handlers to build each segment
 		query = select( query );
 		query = where( query );
+		query = group( query );
+		query = order( query );
+		query = limit( query );
 		
 
 //			if(!parameters.getProcessType().equals(PrismProcessType.DELETE)){
@@ -97,7 +100,7 @@ public class QueryBuilder {
 	/**
 	 * 
 	 */
-	protected SelectQuery<Record> groupBy( SelectQuery<Record> query ){
+	protected SelectQuery<Record> group( SelectQuery<Record> query ){
 		return query;
 	}
 	

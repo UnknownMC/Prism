@@ -11,7 +11,7 @@ import org.jooq.Condition;
 import org.jooq.JoinType;
 import org.jooq.Record;
 import org.jooq.SelectQuery;
-import org.jooq.impl.CustomField;
+import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
 import me.botsko.prism.Prism;
@@ -246,45 +246,58 @@ public class SelectQueryBuilder extends QueryBuilder {
 	 * 
 	 * @return
 	 */
-	protected SelectQuery<Record> groupBy( SelectQuery<Record> query ){
+	@Override
+	protected SelectQuery<Record> group( SelectQuery<Record> query ){
 		if( shouldGroup ){
-			// DATE(FROM_UNIXTIME("+TBL_DATA+".epoch))
 			query.addGroupBy( PrismData.PRISM_DATA.ACTION_ID, PrismData.PRISM_DATA.PLAYER_ID, PrismData.PRISM_DATA.BLOCK_ID, PrismDataExtra.PRISM_DATA_EXTRA.DATA );
-			
-//			PrismData.PRISM_DATA.EPOCH.
+			// @todo This isn't support by jooq!
+			query.addGroupBy( DSL.field("DATE(FROM_UNIXTIME(epoch)") );
 		
 		}
 		return query;
 	}
 	
 	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	protected String order(){
-//		String sort_dir = parameters.getSortDirection();
-//		return " ORDER BY "+TBL_DATA+".epoch "+sort_dir+", x ASC, z ASC, y ASC, id "+sort_dir;	
-//	}
+	/**
+	 * 
+	 * @return
+	 */
+	@Override
+	protected SelectQuery<Record> order( SelectQuery<Record> query ){
+		String sort_dir = parameters.getSortDirection();
+		if( sort_dir.equalsIgnoreCase("asc") ){
+			query.addOrderBy( PrismData.PRISM_DATA.EPOCH.asc() );
+		} else {
+			query.addOrderBy( PrismData.PRISM_DATA.EPOCH.desc() );
+		}
+		query.addOrderBy( PrismData.PRISM_DATA.X.asc() );
+		query.addOrderBy( PrismData.PRISM_DATA.Y.asc() );
+		query.addOrderBy( PrismData.PRISM_DATA.Z.asc() );
+		if( sort_dir.equalsIgnoreCase("asc") ){
+			query.addOrderBy( PrismData.PRISM_DATA.ID.asc() );
+		} else {
+			query.addOrderBy( PrismData.PRISM_DATA.ID.desc() );
+		}
+		return query;
+	}
 	
 	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	protected String limit(){
-//		if( parameters.getProcessType().equals(PrismProcessType.LOOKUP) ){
-//			int limit = parameters.getLimit();
-//			if(limit > 0){
-//				return " LIMIT "+limit;
-//			}
-//		}
-//		return "";
-//	}
+	/**
+	 * 
+	 * @return
+	 */
+	@Override
+	protected SelectQuery<Record> limit( SelectQuery<Record> query ){
+		if( parameters.getProcessType().equals(PrismProcessType.LOOKUP) ){
+			int limit = parameters.getLimit();
+			if(limit > 0){
+				query.addLimit( limit );
+			}
+		}
+		return query;
+	}
 	
 
-	
-	
 	/**
 	 * 
 	 * @return
