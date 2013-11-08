@@ -14,10 +14,10 @@ public class DeleteQueryBuilder extends SelectQueryBuilder {
 	}
 	
 	
-	@Override
-	public String select(){
-		return "DELETE FROM " + tableNameData;
-	}
+//	@Override
+//	public String select(){
+////		return "DELETE FROM " + tableNameData;
+//	}
 	
 	
 	/**

@@ -37,6 +37,11 @@
 		   <scope>system</scope>
 		   <systemPath>${project.basedir}/../LIBS/Herochat.jar</systemPath>
 	   </dependency>
+	   <dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq</artifactId>
+			<version>3.2.0</version>
+		</dependency>
   	</dependencies>
 	<repositories>
 		<repository>
@@ -107,6 +112,7 @@
 						<include>org.apache.tomcat:com.springsource.org.apache.tomcat.jdbc</include>
 						<include>org.apache.juli:com.springsource.org.apache.juli.extras</include>
 						<include>me.botsko:elixr:jar:*</include>
+						<include>org.jooq:jooq:jar:*</include>
                     </includes>
                   </artifactSet>
 				</configuration>
