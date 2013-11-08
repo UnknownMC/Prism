@@ -1,11 +1,15 @@
 package me.botsko.prism.database;
 
+import org.jooq.Configuration;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.SQLDialect;
 import org.jooq.SelectQuery;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
+import org.jooq.impl.DefaultConfiguration;
+import org.jooq.impl.DefaultConnectionProvider;
+import org.jooq.impl.DefaultExecuteListenerProvider;
 
 import me.botsko.prism.Prism;
 import me.botsko.prism.actionlibs.QueryParameters;
@@ -56,7 +60,7 @@ public class QueryBuilder {
 		
 
 		
-		System.out.println(query.getSQL());
+//		System.out.println(query.getSQL());
 		return "SELECT 1;";
 		
 //		String finalSQL = query.getSQL();
@@ -74,10 +78,15 @@ public class QueryBuilder {
 	 * @return
 	 */
 	private DSLContext create(){
+		
+		// Create a configuration with an appropriate listener provider:
+		Configuration configuration = new DefaultConfiguration().set( new DefaultConnectionProvider( Prism.dbc() ) ).set( SQLDialect.MYSQL );
 		if(plugin.getConfig().getBoolean("prism.debug")){
-			return DSL.using( Prism.dbc() , SQLDialect.MYSQL, new Settings().withRenderFormatted(true) );
+			configuration.set( new Settings().withRenderFormatted(true) );
+			configuration.set(new DefaultExecuteListenerProvider(new QueryDebugListener()));
 		}
-		return DSL.using( Prism.dbc() , SQLDialect.MYSQL );
+		
+		return DSL.using( configuration );
 	}
 	
 	

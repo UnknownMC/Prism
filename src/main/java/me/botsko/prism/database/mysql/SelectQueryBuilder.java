@@ -230,6 +230,8 @@ public class SelectQueryBuilder extends QueryBuilder {
 			query.addConditions(locOr);
 			
 		}
+		
+		query.fetch();
 //		
 //		
 //		// Parent process
