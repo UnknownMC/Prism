@@ -52,7 +52,7 @@ public class GenericAction implements Handler {
 	/**
 	 * 
 	 */
-	protected String epoch;
+	protected Long epoch;
 	
 	/**
 	 * 
@@ -158,7 +158,7 @@ public class GenericAction implements Handler {
 	/* (non-Javadoc)
 	 * @see me.botsko.prism.actions.Handler#getActionTime()
 	 */
-	public String getUnixEpoch() {
+	public Long getUnixEpoch() {
 		return epoch;
 	}
 
@@ -174,11 +174,11 @@ public class GenericAction implements Handler {
 	/* (non-Javadoc)
 	 * @see me.botsko.prism.actions.Handler#setDisplayDate(java.lang.String)
 	 */
-	public void setUnixEpoch( String epoch ) {
+	public void setUnixEpoch( Long epoch ) {
 		
 		this.epoch = epoch;
 		
-		Date action_time = new Date(Long.parseLong(epoch) * 1000);
+		Date action_time = new Date(epoch * 1000);
 		
 		SimpleDateFormat date = new SimpleDateFormat("yy/MM/dd");
 		this.display_date = date.format(action_time);
@@ -204,7 +204,7 @@ public class GenericAction implements Handler {
 		
 		String time_ago = "";
 		
-		Date start = new Date(Long.parseLong(this.epoch) * 1000);
+		Date start = new Date(this.epoch * 1000);
 		Date end = new Date();
 		
 		long diffInSeconds = (end.getTime() - start.getTime()) / 1000;

@@ -29,7 +29,7 @@ public interface Handler {
 	/**
 	 * @return the action_time
 	 */
-	public abstract String getUnixEpoch();
+	public abstract Long getUnixEpoch();
 
 	/**
 	 * @return the display_date
@@ -44,7 +44,7 @@ public interface Handler {
 	/**
 	 * @param display_time the display_time to set
 	 */
-	public abstract void setUnixEpoch(String epoch);
+	public abstract void setUnixEpoch(Long epoch);
 
 	/**
 	 * 

@@ -53,9 +53,9 @@ public class SelectQueryBuilder extends QueryBuilder {
 		query.addSelect(PrismWorlds.PRISM_WORLDS.WORLD);
 		
 		if( shouldGroup ){
-			query.addSelect(PrismData.PRISM_DATA.X.avg());
-			query.addSelect(PrismData.PRISM_DATA.Y.avg());
-			query.addSelect(PrismData.PRISM_DATA.Z.avg());
+			query.addSelect(PrismData.PRISM_DATA.X.avg().as("avg_x"));
+			query.addSelect(PrismData.PRISM_DATA.Y.avg().as("avg_y"));
+			query.addSelect(PrismData.PRISM_DATA.Z.avg().as("avg_z"));
 		} else {
 			query.addSelect(PrismData.PRISM_DATA.X);
 			query.addSelect(PrismData.PRISM_DATA.Y);
@@ -69,7 +69,7 @@ public class SelectQueryBuilder extends QueryBuilder {
 		query.addSelect(PrismDataExtra.PRISM_DATA_EXTRA.DATA);
 		
 		if( shouldGroup ){
-			query.addSelect(PrismData.PRISM_DATA.ID.count());
+			query.addSelect(DSL.count().as("counted"));
 		}
 		
 		// From
@@ -96,10 +96,8 @@ public class SelectQueryBuilder extends QueryBuilder {
 		// ID Condition overrides anything else
 		int id = parameters.getId();
 		if(id > 0){
-			PrismData.PRISM_DATA.ID.eq(UInteger.valueOf( id ));
+			query.addConditions( PrismData.PRISM_DATA.ID.eq(UInteger.valueOf( id )) );
 		}
-		
-		query.addConditions( PrismData.PRISM_DATA.ID.eq(UInteger.valueOf( id )) );
 		
 		// World conditions
 		if( !parameters.getProcessType().equals(PrismProcessType.DELETE) && parameters.getWorld() != null ){
@@ -129,7 +127,7 @@ public class SelectQueryBuilder extends QueryBuilder {
 					hasPositiveMatchRule = true;
 				}
 			}
-			query.addConditions( actionConds );
+			if( actionConds != null ) query.addConditions( actionConds );
 		}
 		// exclude internal stuff
 		if( !containsPrismProcessType && !parameters.getProcessType().equals(PrismProcessType.DELETE) && !hasPositiveMatchRule ){
@@ -147,7 +145,7 @@ public class SelectQueryBuilder extends QueryBuilder {
 				playerConds = playerConds.or(PrismPlayers.PRISM_PLAYERS.PLAYER.eq(entry.getKey()));
 			}
 		}
-		query.addConditions( playerConds );
+		if( playerConds != null ) query.addConditions( playerConds );
 		
 		// Radius from loc
 		if( !parameters.getProcessType().equals(PrismProcessType.DELETE) || (parameters.getProcessType().equals(PrismProcessType.DELETE) && parameters.getFoundArgs().containsKey("r") ) ){
@@ -179,7 +177,7 @@ public class SelectQueryBuilder extends QueryBuilder {
 				}
 				blockOr = blockOr.or(c);
 			}
-			query.addConditions(blockOr);
+			if( blockOr != null ) query.addConditions(blockOr);
 		}
 		
 		// Entity
@@ -193,7 +191,7 @@ public class SelectQueryBuilder extends QueryBuilder {
 				}
 				entityConds = entityConds.or( PrismDataExtra.PRISM_DATA_EXTRA.DATA.like("entity_name\":\""+entry.getKey()) );
 			}
-			query.addConditions(entityConds);
+			if( entityConds != null ) query.addConditions(entityConds);
 		}
 		
 		// Timeframe
@@ -227,11 +225,9 @@ public class SelectQueryBuilder extends QueryBuilder {
 				}
 				locOr = locOr.or(c);
 			}
-			query.addConditions(locOr);
+			if( locOr != null ) query.addConditions(locOr);
 			
 		}
-		
-		query.fetch();
 //		
 //		
 //		// Parent process
@@ -253,7 +249,7 @@ public class SelectQueryBuilder extends QueryBuilder {
 		if( shouldGroup ){
 			query.addGroupBy( PrismData.PRISM_DATA.ACTION_ID, PrismData.PRISM_DATA.PLAYER_ID, PrismData.PRISM_DATA.BLOCK_ID, PrismDataExtra.PRISM_DATA_EXTRA.DATA );
 			// @todo This isn't support by jooq!
-			query.addGroupBy( DSL.field("DATE(FROM_UNIXTIME(epoch)") );
+			query.addGroupBy( DSL.field("DATE(FROM_UNIXTIME(epoch))") );
 		
 		}
 		return query;

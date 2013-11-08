@@ -39,7 +39,7 @@ public class QueryBuilder {
 	 * @param shouldGroup
 	 * @return
 	 */
-	public String getQuery( QueryParameters parameters, boolean shouldGroup ){
+	public SelectQuery<Record> getQuery( QueryParameters parameters, boolean shouldGroup ){
 		
 		this.parameters = parameters;
 		this.shouldGroup = shouldGroup;
@@ -53,22 +53,8 @@ public class QueryBuilder {
 		query = group( query );
 		query = order( query );
 		query = limit( query );
-		
 
-//			if(!parameters.getProcessType().equals(PrismProcessType.DELETE)){
-//			}
-		
-
-		
-//		System.out.println(query.getSQL());
-		return "SELECT 1;";
-		
-//		String finalSQL = query.getSQL();
-//		if(plugin.getConfig().getBoolean("prism.debug")){
-//			Prism.debug(finalSQL);
-//		}
-		
-//		return finalSQL;
+		return query;
 		
 	}
 	
@@ -78,8 +64,6 @@ public class QueryBuilder {
 	 * @return
 	 */
 	private DSLContext create(){
-		
-		// Create a configuration with an appropriate listener provider:
 		Configuration configuration = new DefaultConfiguration().set( new DefaultConnectionProvider( Prism.dbc() ) ).set( SQLDialect.MYSQL );
 		if(plugin.getConfig().getBoolean("prism.debug")){
 			configuration.set( new Settings().withRenderFormatted(true) );
