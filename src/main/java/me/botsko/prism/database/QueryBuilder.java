@@ -97,7 +97,7 @@ public class QueryBuilder {
 	/**
 	 * 
 	 */
-	protected SelectQuery<Record> group( SelectQuery<Record> query ){
+	protected SelectQuery<Record> groupBy( SelectQuery<Record> query ){
 		return query;
 	}
 	

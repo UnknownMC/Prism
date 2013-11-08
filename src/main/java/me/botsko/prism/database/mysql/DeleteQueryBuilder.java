@@ -20,33 +20,33 @@ public class DeleteQueryBuilder extends SelectQueryBuilder {
 //	}
 	
 	
-	/**
-	 * 
-	 */
-	@Override
-	protected String group(){
-		return "";
-	}
-	
-	
-	/**
-	 * 
-	 */
-	@Override
-	protected String order(){
-		return "";
-	}
-	
-	
-	/**
-	 * 
-	 */
-	@Override
-	protected String limit(){
-		int perBatch = plugin.getConfig().getInt("prism.purge.records-per-batch");
-		if( perBatch < 100){
-			perBatch = 100;
-		}
-		return " LIMIT " + perBatch;
-	}
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	protected String group(){
+//		return "";
+//	}
+//	
+//	
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	protected String order(){
+//		return "";
+//	}
+//	
+//	
+//	/**
+//	 * 
+//	 */
+//	@Override
+//	protected String limit(){
+//		int perBatch = plugin.getConfig().getInt("prism.purge.records-per-batch");
+//		if( perBatch < 100){
+//			perBatch = 100;
+//		}
+//		return " LIMIT " + perBatch;
+//	}
 }
