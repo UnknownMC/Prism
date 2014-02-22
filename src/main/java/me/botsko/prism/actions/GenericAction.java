@@ -113,14 +113,14 @@ public class GenericAction implements Handler {
 	 * 
 	 */
 	protected String data;
-
-	 // MCPC+ start
+	
+	// MCPC+ start
 	/**
-	 * 
-	 */
-	 protected String te_data;
-	 // MCPC+ end
-
+	*
+	*/
+	protected String te_data;
+	// MCPC+ end
+	
 	/**
 	 * 
 	 */
@@ -464,6 +464,15 @@ public class GenericAction implements Handler {
 		return data;
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see me.botsko.prism.actions.Handler#setData(java.lang.String)
+	 */
+	public void setData(String data) {
+		this.data = data;
+	}
+	
+	
 	// MCPC+ start
 	/* (non-Javadoc)
 	* @see me.botsko.prism.actions.Handler#getData()
@@ -471,7 +480,7 @@ public class GenericAction implements Handler {
 	public String getTileEntityData() {
 		return te_data;
 	}
-
+	
 	/* (non-Javadoc)
 	* @see me.botsko.prism.actions.Handler#setData(java.lang.String)
 	*/
@@ -479,13 +488,6 @@ public class GenericAction implements Handler {
 		this.te_data = data;
 	}
 	// MCPC+ end
-
-	/* (non-Javadoc)
-	 * @see me.botsko.prism.actions.Handler#setData(java.lang.String)
-	 */
-	public void setData(String data) {
-		this.data = data;
-	}
 	
 	
 	/* (non-Javadoc)

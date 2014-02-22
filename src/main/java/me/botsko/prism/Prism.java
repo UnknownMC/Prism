@@ -855,7 +855,8 @@ public class Prism extends JavaPlugin {
 	public static ArrayList<Integer> getIllegalBlocks(){
 		return illegalBlocks;
 	}
-
+	
+	
 	// MCPC+ start
 	/**
 	 * 
@@ -873,6 +874,7 @@ public class Prism extends JavaPlugin {
 		return illegalBreakBlocks;
 	}
 	// MCPC+ end
+	
 	
 	/**
 	 * 

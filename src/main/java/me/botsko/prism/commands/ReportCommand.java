@@ -41,7 +41,7 @@ public class ReportCommand implements SubHandler {
 	 */
 	public void handle(CallInfo call) {
 		
-		if(call.getArgs().length != 2){
+		if(call.getArgs().length < 2){
 			call.getSender().sendMessage( Prism.messenger.playerError( "Please specify a report. Use /prism ? for help." ) );
 			return;
 		}
@@ -129,7 +129,7 @@ public class ReportCommand implements SubHandler {
 				sender.sendMessage( Prism.messenger.playerError( "Pool returned an already closed connection.") );
 			}
 			else if( conn.isValid(5) ){
-				sender.sendMessage( Prism.messenger.playerMsg( "Pool returned valid connection!") );
+				sender.sendMessage( Prism.messenger.playerSuccess( "Pool returned valid connection!") );
 			}
 		} catch (SQLException e){
 			sender.sendMessage( Prism.messenger.playerError( "Error: " + e.getMessage()) );

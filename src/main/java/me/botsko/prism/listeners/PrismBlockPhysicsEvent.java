@@ -89,6 +89,7 @@ public class PrismBlockPhysicsEvent implements Listener {
 					plugin.preplannedBlockFalls.remove(coord_key);
 				}
 			}
+
 			// MCPC+ start - temporary workaround for lack of break events in Forge
 			Block block = event.getBlock();
 			if (!((CraftWorld)block.getWorld()).getHandle().isEmpty(block.getX(), block.getY(), block.getZ()) && !Prism.getIllegalPhysicsBlocks().contains( block.getTypeId()))
@@ -103,6 +104,7 @@ public class PrismBlockPhysicsEvent implements Listener {
 				}
 			}
 			// MCPC+ end
+
 		}
 	}
 

@@ -1,6 +1,9 @@
 jooq_codegen
 deploy.sh
+<<<<<<< HEAD
 jooq_codegen
+=======
+>>>>>>> master
 pass.txt
 dev.sh
 dependency-reduced-pom.xml

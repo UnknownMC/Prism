@@ -1,22 +1,20 @@
 package me.botsko.prism.utils;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import me.botsko.prism.events.BlockStateChange;
+import net.minecraft.server.v1_6_R3.NBTCompressedStreamTools;
+import net.minecraft.server.v1_6_R3.NBTTagCompound;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-// MCPC+ start
-import java.io.UnsupportedEncodingException;
-import net.minecraft.server.v1_6_R3.NBTCompressedStreamTools;
-import net.minecraft.server.v1_6_R3.NBTTagCompound;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
-// MCPC+ end
 
 public class BlockUtils extends me.botsko.elixr.BlockUtils {
     
@@ -131,7 +129,8 @@ public class BlockUtils extends me.botsko.elixr.BlockUtils {
 		Material[] materials = { Material.WATER, Material.STATIONARY_WATER };
 		return removeMaterialsFromRadius(materials, loc, radius);
 	}
-
+	
+	
 	// MCPC+ start - used to compress TileEntity NBT for small footprint in DB
 	public static String compressTileEntityData(Block block) {
 		net.minecraft.server.v1_6_R3.TileEntity tileentity = ((CraftWorld)block.getWorld()).getHandle().getTileEntity(block.getX(), block.getY(), block.getZ());

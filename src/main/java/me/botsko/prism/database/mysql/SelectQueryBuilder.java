@@ -58,6 +58,7 @@ public class SelectQueryBuilder extends QueryBuilder {
 		columns.add("old_block_subid");
 		columns.add("data");
 		columns.add("te_data"); // MCPC+
+
 		
 		if( shouldGroup ){
 			columns.add("COUNT(*) counted");
@@ -188,10 +189,7 @@ public class SelectQueryBuilder extends QueryBuilder {
 	 * 
 	 */
 	protected void radiusCondition(){
-		// Radius from loc
-		if( !parameters.getProcessType().equals(PrismProcessType.DELETE) || (parameters.getProcessType().equals(PrismProcessType.DELETE) && parameters.getFoundArgs().containsKey("r") ) ){
-			buildRadiusCondition(parameters.getMinLocation(), parameters.getMaxLocation());
-		}
+		buildRadiusCondition(parameters.getMinLocation(), parameters.getMaxLocation());
 	}
 	
 	

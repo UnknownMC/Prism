@@ -107,6 +107,7 @@ public class RecordingTask implements Runnable {
 	        }
 	        
 	        // Add insert query for extra data if needed
+
 			if( (a.getData() != null && !a.getData().isEmpty()) || (a.getTileEntityData() != null && !a.getTileEntityData().isEmpty()) ){
 				s = conn.prepareStatement("INSERT INTO prism_data_extra (data_id,data) VALUES (?,?,?)");
 				s.setInt(1, id);
