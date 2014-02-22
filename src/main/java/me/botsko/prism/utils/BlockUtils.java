@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import me.botsko.prism.events.BlockStateChange;
-import net.minecraft.server.v1_6_R3.NBTCompressedStreamTools;
-import net.minecraft.server.v1_6_R3.NBTTagCompound;
+import net.minecraft.server.v1_7_R1.NBTCompressedStreamTools;
+import net.minecraft.server.v1_7_R1.NBTTagCompound;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.Location;
@@ -14,7 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
 
 public class BlockUtils extends me.botsko.elixr.BlockUtils {
     
@@ -133,7 +133,7 @@ public class BlockUtils extends me.botsko.elixr.BlockUtils {
 	
 	// MCPC+ start - used to compress TileEntity NBT for small footprint in DB
 	public static String compressTileEntityData(Block block) {
-		net.minecraft.server.v1_6_R3.TileEntity tileentity = ((CraftWorld)block.getWorld()).getHandle().getTileEntity(block.getX(), block.getY(), block.getZ());
+		net.minecraft.server.v1_7_R1.TileEntity tileentity = ((CraftWorld)block.getWorld()).getHandle().getTileEntity(block.getX(), block.getY(), block.getZ());
 		if (tileentity != null && !((CraftWorld)block.getWorld()).getHandle().isEmpty(block.getX(), block.getY(), block.getZ()))
 		{
 			NBTTagCompound c = new NBTTagCompound();
