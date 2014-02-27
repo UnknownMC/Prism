@@ -49,7 +49,7 @@ public class BlockAction extends GenericAction {
 			}
 		
 			// spawner
-			if( block != null && block.getTypeId() == 52 ){
+			if(block.getTypeId() == 52){
 				SpawnerActionData spawnerActionData = new SpawnerActionData();
 				CreatureSpawner s = (CreatureSpawner)block.getState();
 				spawnerActionData.entity_type = s.getSpawnedType().name().toLowerCase();
@@ -58,7 +58,7 @@ public class BlockAction extends GenericAction {
 			}
 			
 			// skulls
-			else if( block != null && (block.getTypeId() == 144 || block.getTypeId() == 397) ){
+			else if((block.getTypeId() == 144 || block.getTypeId() == 397)){
 				SkullActionData skullActionData = new SkullActionData();
 				Skull s = (Skull)block.getState();
 				skullActionData.rotation = s.getRotation().name().toLowerCase();
@@ -68,7 +68,7 @@ public class BlockAction extends GenericAction {
 			}
 			
 			// signs
-			else if( block != null && (block.getTypeId() == 63 || block.getTypeId() == 68) ){
+			else if((block.getTypeId() == 63 || block.getTypeId() == 68)){
 				SignActionData signActionData = new SignActionData();
 				Sign s = (Sign) block.getState();
 				signActionData.lines = s.getLines();
@@ -76,7 +76,7 @@ public class BlockAction extends GenericAction {
 			}
 			
 			// command block
-			else if( block != null && (block.getTypeId() == 137) ){
+			else if((block.getTypeId() == 137)){
 				CommandBlock cmdblock = (CommandBlock) block.getState();
 				data = cmdblock.getCommand();
 			}
@@ -315,7 +315,7 @@ public class BlockAction extends GenericAction {
 	protected ChangeResult placeBlock( Player player, QueryParameters parameters, boolean is_preview, Block block, boolean is_deferred ){
 
 		Material m = Material.getMaterial(getBlockId());
-		BlockStateChange stateChange = null;
+		BlockStateChange stateChange;
 
 		// Ensure block action is allowed to place a block here.
 		// (essentially liquid/air).
@@ -356,7 +356,7 @@ public class BlockAction extends GenericAction {
 				Block obsidian = BlockUtils.getFirstBlockOfMaterialBelow(Material.OBSIDIAN, block.getLocation());
 				if(obsidian != null){
 					Block above = obsidian.getRelative(BlockFace.UP);
-					if(!above.equals(Material.PORTAL)){
+					if(!(above.getType() == Material.PORTAL)){
 						above.setType(Material.FIRE);
 						return new ChangeResult( ChangeResultType.APPLIED, null );
 					}
@@ -504,7 +504,7 @@ public class BlockAction extends GenericAction {
 	 */
 	protected ChangeResult removeBlock( Player player, QueryParameters parameters, boolean is_preview, Block block ){
 		
-		BlockStateChange stateChange = null;
+		BlockStateChange stateChange;
 		
 		if(!block.getType().equals(Material.AIR)){
 			
