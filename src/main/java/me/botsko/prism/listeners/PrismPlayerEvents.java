@@ -7,6 +7,7 @@ import me.botsko.prism.actionlibs.ActionFactory;
 import me.botsko.prism.actionlibs.RecordingQueue;
 import me.botsko.prism.actions.BlockAction;
 import me.botsko.prism.actions.Handler;
+import me.botsko.prism.players.PlayerIdentification;
 import me.botsko.prism.wands.ProfileWand;
 import me.botsko.prism.wands.Wand;
 
@@ -116,7 +117,7 @@ public class PrismPlayerEvents implements Listener {
 		Player player = event.getPlayer();
 		
 		// Lookup player for cache reasons
-		Prism.cachePlayerPrimaryKey( player.getName() );
+		PlayerIdentification.cachePrismPlayer( player );
 		
 		// Track the join event
 		if( !Prism.getIgnore().event("player-join",player) ) return;

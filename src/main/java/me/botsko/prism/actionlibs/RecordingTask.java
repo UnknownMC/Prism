@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 import me.botsko.prism.Prism;
 import me.botsko.prism.actions.Handler;
+import me.botsko.prism.players.PlayerIdentification;
+import me.botsko.prism.players.PrismPlayer;
 
 public class RecordingTask implements Runnable {
 	
@@ -67,7 +69,11 @@ public class RecordingTask implements Runnable {
         		action_id = Prism.prismActions.get(a.getType().getName());
         	}
         	
-        	int player_id = getPlayerPrimaryKey( a.getPlayerName() );
+        	int player_id = 0;
+        	PrismPlayer prismPlayer = PlayerIdentification.getPrismPlayer( a.getPlayerName() );
+        	if( prismPlayer != null ){
+        		player_id = prismPlayer.getId();
+        	}
         	
         	if( world_id == 0 || action_id == 0 || player_id == 0 ){
         		// @todo do something, error here
@@ -108,21 +114,6 @@ public class RecordingTask implements Runnable {
         	if(conn != null) try { conn.close(); } catch (SQLException ignored) {}
         }
 		return id;
-	}
-	
-	
-	/**
-	 * 
-	 * @param playerName
-	 * @return
-	 */
-	protected static int getPlayerPrimaryKey( String playerName ){
-    	if( Prism.prismPlayers.containsKey(playerName) ){
-    		return Prism.prismPlayers.get(playerName);
-    	} else {
-    		Prism.cachePlayerPrimaryKey(playerName);
-    		return Prism.prismPlayers.get(playerName);
-    	}
 	}
 	
 	
@@ -192,7 +183,11 @@ public class RecordingTask implements Runnable {
 		        		action_id = Prism.prismActions.get(a.getType().getName());
 		        	}
 		        	
-		        	int player_id = getPlayerPrimaryKey( a.getPlayerName() );
+		        	int player_id = 0;
+		        	PrismPlayer prismPlayer = PlayerIdentification.getPrismPlayer( a.getPlayerName() );
+		        	if( prismPlayer != null ){
+		        		player_id = prismPlayer.getId();
+		        	}
 		        	
 		        	if( world_id == 0 || action_id == 0 || player_id == 0 ){
 		        		// @todo do something, error here
