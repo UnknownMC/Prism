@@ -264,6 +264,9 @@ public class Prism extends JavaPlugin {
 
 			// Delete old data based on config
 			launchScheduledPurgeManager();
+			
+			// Keep watch on db connections, other sanity
+			launchInternalAffairs();
 
 		}
 	}
@@ -1030,6 +1033,15 @@ public class Prism extends JavaPlugin {
 		// scheduledPurgeExecutor = 
 		schedulePool.scheduleAtFixedRate( purgeManager, 0, 12, TimeUnit.HOURS);
 		// scheduledPurgeExecutor.cancel();
+	}
+	
+	
+	/**
+	 * 
+	 */
+	public void launchInternalAffairs(){
+	    InternalAffairs recordingMonitor = new InternalAffairs(this);
+	    recordingMonitorTask.scheduleAtFixedRate( recordingMonitor, 0, 5, TimeUnit.MINUTES);
 	}
 
 	
