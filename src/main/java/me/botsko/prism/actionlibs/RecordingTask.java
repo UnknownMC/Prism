@@ -1,9 +1,12 @@
 package me.botsko.prism.actionlibs;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 import com.mongodb.WriteResult;
 
 import me.botsko.prism.Prism;
@@ -73,8 +76,6 @@ public class RecordingTask implements Runnable {
      */
     public void insertActionsIntoDatabase() {
 
- 
-        int actionsRecorded = 0;
         try {
 
             int perBatch = plugin.getConfig().getInt( "prism.database.actions-per-insert-batch" );
@@ -85,7 +86,8 @@ public class RecordingTask implements Runnable {
 
                 Prism.debug( "Beginning batch insert from queue. " + System.currentTimeMillis() );
 
-                DBCollection coll = Prism.getMongoCollection();
+                // Begin new batch
+                List<DBObject> documents = new ArrayList<DBObject>();
 
                 int i = 0;
                 while ( !RecordingQueue.getQueue().isEmpty() ) {
@@ -99,8 +101,6 @@ public class RecordingTask implements Runnable {
                     if( a.isCanceled() )
                         continue;
 
-                    actionsRecorded++;
-                    
                     BasicDBObject doc = new BasicDBObject("world", a.getWorldName()).
                             append("action", a.getType().getName()).
                             append("player", a.getPlayerName()).
@@ -114,9 +114,8 @@ public class RecordingTask implements Runnable {
                             append("epoch",System.currentTimeMillis() / 1000L).
                             append("data",a.getData());
                     
-                    WriteResult res = coll.insert( doc );
-                    Prism.debug(  res.toString()  );
-
+                    documents.add( doc );
+                    
                     // Break out of the loop and just commit what we have
                     if( i >= perBatch ) {
                         Prism.debug( "Recorder: Batch max exceeded, running insert. Queue remaining: "
@@ -125,15 +124,19 @@ public class RecordingTask implements Runnable {
                     }
                     i++;
                 }
+                
+                if( documents.isEmpty() ) return;
+                
+                DBCollection coll = Prism.getMongoCollection();
+                WriteResult res = coll.insert( documents );
+                Prism.debug("Recorder logged " + res.getN() + " new actions.");
 
                 // Save the current count to the queue for short historical data
-                plugin.queueStats.addRunCount( actionsRecorded );
+                plugin.queueStats.addRunCount( res.getN() );
 
             }
         } catch ( final Exception e ) {
             e.printStackTrace();
-        } finally {
-            
         }
     }
 

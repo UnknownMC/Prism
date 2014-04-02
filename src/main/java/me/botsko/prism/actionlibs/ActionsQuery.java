@@ -94,9 +94,9 @@ public class ActionsQuery {
 //                Prism.debug(group.toString());
                 
                 AggregationOutput aggregated = Prism.getMongoCollection().aggregate( matcher, sorter, limit );
-                Prism.debug(aggregated.toString());
+//                Prism.debug(aggregated.toString());
                 
-                plugin.eventTimer.recordTimedEvent( "query returned, building results" );
+                plugin.eventTimer.recordTimedEvent( "query returned, will now build results" );
                 
                 for (DBObject result : aggregated.results()){
 
