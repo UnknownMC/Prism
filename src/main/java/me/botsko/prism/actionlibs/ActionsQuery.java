@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -57,19 +58,19 @@ public class ActionsQuery {
             player = (Player) sender;
         }
 
-//        // If lookup, determine if we need to group
-//        shouldGroup = false;
-//        if( parameters.getProcessType().equals( PrismProcessType.LOOKUP ) ) {
-//            shouldGroup = true;
-//            // What to default to
-//            if( !plugin.getConfig().getBoolean( "prism.queries.lookup-auto-group" ) ) {
-//                shouldGroup = false;
-//            }
-//            // Any overriding flags passed?
-//            if( parameters.hasFlag( Flag.NO_GROUP ) || parameters.hasFlag( Flag.EXTENDED ) ) {
-//                shouldGroup = false;
-//            }
-//        }
+        // If lookup, determine if we need to group
+        shouldGroup = false;
+        if( parameters.getProcessType().equals( PrismProcessType.LOOKUP ) ) {
+            shouldGroup = true;
+            // What to default to
+            if( !plugin.getConfig().getBoolean( "prism.queries.lookup-auto-group" ) ) {
+                shouldGroup = false;
+            }
+            // Any overriding flags passed?
+            if( parameters.hasFlag( Flag.NO_GROUP ) || parameters.hasFlag( Flag.EXTENDED ) ) {
+                shouldGroup = false;
+            }
+        }
 
         // Pull results
         final List<Handler> actions = new ArrayList<Handler>();
@@ -79,7 +80,7 @@ public class ActionsQuery {
 
         if( query != null ) {
             
-            DBCursor cursor = null;
+//            DBCursor cursor = null;
 
             try {
 
@@ -99,18 +100,50 @@ public class ActionsQuery {
 //                    RecordingManager.failedDbConnectionCount = 0;
 //                }
 
-                cursor = Prism.getMongoCollection().find(query);
-                cursor.limit( parameters.getLimit() );
+//                cursor = Prism.getMongoCollection().find(query);
+//                cursor.limit( parameters.getLimit() );
+//                int sortDir = parameters.getSortDirection().equals( "ASC" ) ? 1 : -1;
+//                cursor.sort( new BasicDBObject("epoch",sortDir).append( "x", 1 ).append( "z", 1 ).append( "y", 1 ).append( "id", sortDir ) );
+                
+//                BasicDBObject finalQuery = new BasicDBObject("$match",query);
+//                int sortDir = parameters.getSortDirection().equals( "ASC" ) ? 1 : -1;
+//                finalQuery.append( "$sort", new BasicDBObject("epoch",sortDir).append( "x", 1 ).append( "z", 1 ).append( "y", 1 ).append( "id", sortDir ) );
+//                finalQuery.append( "$limit", parameters.getLimit() );
+//                finalQuery.append( "$group", new BasicDBObject("_id","$action").append( "count", new BasicDBObject("$sum", 1) ) );
+//                Prism.debug(finalQuery.toString());
+//                
+////                BasicDBObject group = new BasicDBObject("_id","$action").append( "count", "$sum : 1" );
+////                Prism.debug(group.toString());
+//                
+//                
+//                AggregationOutput aggregated = Prism.getMongoCollection().aggregate( finalQuery );
+//                Prism.debug(aggregated.toString());
+                
+                BasicDBObject matcher = new BasicDBObject("$match",query);
+                
                 int sortDir = parameters.getSortDirection().equals( "ASC" ) ? 1 : -1;
-                cursor.sort( new BasicDBObject("epoch",sortDir).append( "x", 1 ).append( "z", 1 ).append( "y", 1 ).append( "id", sortDir ) );
+                BasicDBObject sorter = new BasicDBObject( "$sort", new BasicDBObject("epoch",sortDir).append( "x", 1 ).append( "z", 1 ).append( "y", 1 ).append( "id", sortDir ) );
+                BasicDBObject limit = new BasicDBObject( "$limit", parameters.getLimit() );
+//                BasicDBObject project = new BasicDBObject( "$project", new BasicDBObject("player",1) );
+                BasicDBObject group = new BasicDBObject("$group", new BasicDBObject("_id",new BasicDBObject("action","$action").append( "player", "$player" )).append( "count", new BasicDBObject("$sum", 1) ) );
+//                Prism.debug(finalQuery.toString());
                 
-                Prism.debug(cursor.toString());
+//                BasicDBObject group = new BasicDBObject("_id","$action").append( "count", "$sum : 1" );
+//                Prism.debug(group.toString());
                 
+                
+                AggregationOutput aggregated = Prism.getMongoCollection().aggregate( matcher, sorter, limit );
+                Prism.debug(aggregated.toString());
+                
+
                 plugin.eventTimer.recordTimedEvent( "query returned, building results" );
                 
-                while(cursor.hasNext()){
+                for (DBObject result : aggregated.results()){
                     
-                    DBObject result = cursor.next();
+//                    System.out.println( "has action: " + record.containsField( "action" ) );
+//                    System.out.println( "action: " + record.get( "action" ) );
+//                    System.out.println( "_id:" + record.containsField( "_id" ) );
+//                    System.out.println( "_id:" + record.get( "_id" ) );
                     
                     if( result.get( "action" ) == null ) continue;
 
@@ -156,7 +189,7 @@ public class ActionsQuery {
             } catch ( final Exception e ) {
                 e.printStackTrace();
             } finally {
-                if( cursor != null ) cursor.close();
+//                if( cursor != null ) cursor.close();
             }
         }
 
