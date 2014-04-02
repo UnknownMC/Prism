@@ -100,6 +100,11 @@ public class ActionsQuery {
 //                }
 
                 cursor = Prism.getMongoCollection().find(query);
+                cursor.limit( parameters.getLimit() );
+                int sortDir = parameters.getSortDirection().equals( "ASC" ) ? 1 : -1;
+                cursor.sort( new BasicDBObject("epoch",sortDir).append( "x", 1 ).append( "z", 1 ).append( "y", 1 ).append( "id", sortDir ) );
+                
+                Prism.debug(cursor.toString());
                 
                 plugin.eventTimer.recordTimedEvent( "query returned, building results" );
                 
@@ -121,7 +126,6 @@ public class ActionsQuery {
                         // Set all shared values
                         baseHandler.setPlugin( plugin );
                         baseHandler.setType( actionType );
-//                        baseHandler.setId( result.get( "_id" ) );
                         baseHandler.setUnixEpoch( (Long) result.get( "epoch" ) );
                         baseHandler.setPlayerName( (String) result.get( "player" ) );
                         baseHandler.setWorldName( (String) result.get( "world" ) );
