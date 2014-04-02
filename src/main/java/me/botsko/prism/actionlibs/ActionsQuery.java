@@ -15,7 +15,7 @@ import me.botsko.prism.actions.Handler;
 import me.botsko.prism.actions.PrismProcessAction;
 import me.botsko.prism.appliers.PrismProcessType;
 import me.botsko.prism.commandlibs.Flag;
-import me.botsko.prism.database.CollectionConditions;
+import me.botsko.prism.database.DBConditions;
 
 public class ActionsQuery {
 
@@ -75,7 +75,7 @@ public class ActionsQuery {
         final List<Handler> actions = new ArrayList<Handler>();
 
         // Build conditions based off final args
-        final BasicDBObject query = CollectionConditions.queryParamsToMongo( parameters );
+        final BasicDBObject query = DBConditions.queryParamsToMongo( parameters );
 
         if( query != null ) {
             
@@ -136,7 +136,7 @@ public class ActionsQuery {
                         baseHandler.setBlockSubId( (Integer) result.get( "block_subid" ) );
                         baseHandler.setOldBlockId( (Integer) result.get( "old_block_id" ) );
                         baseHandler.setOldBlockSubId( (Integer) result.get( "old_block_subid" ) );
-//                        baseHandler.setData( rs.getString( 13 ) );
+                        baseHandler.setData( (String) result.get( "data" ) );
                         baseHandler.setMaterialAliases( Prism.getItems() );
 
                         // Set aggregate counts if a lookup

@@ -6,13 +6,12 @@ import java.util.Map.Entry;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
-import me.botsko.prism.Prism;
 import me.botsko.prism.actionlibs.QueryParameters;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 
-public class CollectionConditions {
+public class DBConditions {
     
     
     /**
@@ -41,7 +40,6 @@ public class CollectionConditions {
 //        parameters.getEntities()
 //        parameters.getId();
 //        parameters.getKeyword()
-//        parameters.getSortDirection()
         
         // Blocks
         if( !parameters.getBlockFilters().isEmpty() ){
@@ -77,12 +75,7 @@ public class CollectionConditions {
             query.append( "y", new BasicDBObject("$gt", minLoc.getBlockY()).append( "$lt", maxLoc.getBlockY() ) );
             query.append( "z", new BasicDBObject("$gt", minLoc.getBlockZ()).append( "$lt", maxLoc.getBlockZ() ) );
         }
-        
-        // @todo add grouping
-        // @todo add limits
-        // @todo add order by
-        
-        
+
         // Time
         if( !parameters.getIgnoreTime() ){
             if( parameters.getBeforeTime() != null && parameters.getBeforeTime() > 0 ){

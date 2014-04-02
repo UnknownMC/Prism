@@ -86,8 +86,6 @@ public class RecordingTask implements Runnable {
 
                 Prism.debug( "Beginning batch insert from queue. " + System.currentTimeMillis() );
 
-                final ArrayList<Handler> extraDataQueue = new ArrayList<Handler>();
-
                 // Handle dead connections
              // @todo mongodb
 //                if( conn == null || conn.isClosed() ) {
@@ -133,12 +131,11 @@ public class RecordingTask implements Runnable {
                             append("x",a.getX()).
                             append("y",a.getY()).
                             append("z",a.getZ()).
-                            append("epoch",System.currentTimeMillis() / 1000L);
+                            append("epoch",System.currentTimeMillis() / 1000L).
+                            append("data",a.getData());
                     
                     WriteResult res = coll.insert( doc );
-//                    System.out.println(  res.toString()  );
-
-                    extraDataQueue.add( a );
+                    Prism.debug(  res.toString()  );
 
                     // Break out of the loop and just commit what we have
                     if( i >= perBatch ) {
