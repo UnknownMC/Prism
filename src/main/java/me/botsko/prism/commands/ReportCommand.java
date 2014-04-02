@@ -10,10 +10,13 @@ import me.botsko.prism.commandlibs.CallInfo;
 import me.botsko.prism.commandlibs.PreprocessArgs;
 import me.botsko.prism.commandlibs.SubHandler;
 import me.botsko.prism.utils.MiscUtils;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitScheduler;
+
+import com.mongodb.MongoException;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -137,13 +140,6 @@ public class ReportCommand implements SubHandler {
                 + RecordingManager.failedDbConnectionCount ) );
         sender.sendMessage( Prism.messenger.playerMsg( "Actions in queue: " + ChatColor.WHITE
                 + RecordingQueue.getQueueSize() ) );
-     // @todo mongodb
-//        sender.sendMessage( Prism.messenger.playerMsg( "Pool active: " + ChatColor.WHITE + Prism.getPool().getActive() ) );
-//        sender.sendMessage( Prism.messenger.playerMsg( "Pool idle: " + ChatColor.WHITE + Prism.getPool().getIdle() ) );
-//        sender.sendMessage( Prism.messenger.playerMsg( "Pool active count: " + ChatColor.WHITE
-//                + Prism.getPool().getNumActive() ) );
-//        sender.sendMessage( Prism.messenger.playerMsg( "Pool idle count: " + ChatColor.WHITE
-//                + Prism.getPool().getNumIdle() ) );
 
         boolean recorderActive = false;
         if( plugin.recordingTask != null ) {
@@ -162,27 +158,17 @@ public class ReportCommand implements SubHandler {
         }
 
         sender.sendMessage( Prism.messenger.playerSubduedHeaderMsg( "Attempting to check connection readiness..." ) );
-     // @todo mongodb
-//        Connection conn = null;
-//        try {
-//
-//            conn = Prism.dbc();
-//            if( conn == null ) {
-//                sender.sendMessage( Prism.messenger.playerError( "Pool returned NULL instead of a valid connection." ) );
-//            } else if( conn.isClosed() ) {
-//                sender.sendMessage( Prism.messenger.playerError( "Pool returned an already closed connection." ) );
-//            } else if( conn.isValid( 5 ) ) {
-//                sender.sendMessage( Prism.messenger.playerSuccess( "Pool returned valid connection!" ) );
-//            }
-//        } catch ( final SQLException e ) {
-//            sender.sendMessage( Prism.messenger.playerError( "Error: " + e.getMessage() ) );
-//            e.printStackTrace();
-//        } finally {
-//            if( conn != null )
-//                try {
-//                    conn.close();
-//                } catch ( final SQLException ignored ) {}
-//        }
+        
+        try {
+            if( Prism.getMongo() == null ) {
+                Prism.log( "[InternalAffairs] Pool returned NULL instead of a valid connection." );
+            }
+            Prism.getMongo().getDB("prism");
+            sender.sendMessage( Prism.messenger.playerSuccess( "Pool returned valid connection!" ) );
+        } catch ( final MongoException e ) {
+            sender.sendMessage( Prism.messenger.playerError( "[InternalAffairs] Error: " + e.getMessage() ));
+            e.printStackTrace();
+        }
     }
 
     /**

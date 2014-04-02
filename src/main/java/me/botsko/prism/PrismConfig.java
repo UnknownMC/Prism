@@ -38,7 +38,7 @@ public class PrismConfig extends ConfigBase {
         config.addDefault( "prism.database.max-wait", 30000 );
         config.addDefault( "prism.database.max-failures-before-wait", 5 );
         config.addDefault( "prism.database.actions-per-insert-batch", 1000 );
-
+        
         // queue
         config.addDefault( "prism.database.force-write-queue-on-shutdown", true );
 
@@ -48,6 +48,13 @@ public class PrismConfig extends ConfigBase {
         config.addDefault( "prism.mysql.password", "" );
         config.addDefault( "prism.mysql.database", "minecraft" );
         config.addDefault( "prism.mysql.port", "3306" );
+        
+        // MongoDB
+        config.addDefault( "prism.mongodb.hostname", "127.0.0.1" );
+//        config.addDefault( "prism.mongodb.username", "root" );
+//        config.addDefault( "prism.mongodb.password", "" );
+        config.addDefault( "prism.mongodb.database", "prism" );
+        config.addDefault( "prism.mongodb.port", 27017 );
 
         // pste.me sharing.
         config.addDefault( "prism.paste.enable", false );

@@ -9,6 +9,8 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import com.mongodb.MongoException;
+
 public class RecorderCommand implements SubHandler {
 
     /**
@@ -71,33 +73,15 @@ public class RecorderCommand implements SubHandler {
                 // Run db tests...
                 call.getSender().sendMessage( Prism.messenger.playerMsg( "Validating database connections..." ) );
 
-             // @todo mongodb
-//                // Attempt to get db
-//                Connection conn = null;
-//                try {
-//
-//                    conn = Prism.dbc();
-//                    if( conn == null || conn.isClosed() ) {
-//                        call.getSender()
-//                                .sendMessage(
-//                                        Prism.messenger
-//                                                .playerError( "Valid database connection could not be found. Check the db/console and try again." ) );
-//                        return;
-//                    }
-//
-//                    call.getSender().sendMessage( Prism.messenger.playerSuccess( "Valid connection found. Yay!" ) );
-//
-//                    call.getSender().sendMessage( Prism.messenger.playerMsg( "Restarting recordering tasks..." ) );
-//                    plugin.actionRecorderTask();
-//
-//                } catch ( final Exception e ) {
-//                    e.printStackTrace();
-//                } finally {
-//                    if( conn != null )
-//                        try {
-//                            conn.close();
-//                        } catch ( final Exception ignored ) {};
-//                }
+                try {
+                    Prism.getMongo().getDB("prism");
+                    if( Prism.getMongo() == null ) {
+                        Prism.log( "[InternalAffairs] Pool returned NULL instead of a valid connection." );
+                    }
+                } catch ( final MongoException e ) {
+                    Prism.debug( "[InternalAffairs] Error: " + e.getMessage() );
+                    e.printStackTrace();
+                }
             }
             return;
         }

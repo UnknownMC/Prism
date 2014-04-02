@@ -1,7 +1,6 @@
 package me.botsko.prism.actionlibs;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -86,25 +85,6 @@ public class RecordingTask implements Runnable {
 
                 Prism.debug( "Beginning batch insert from queue. " + System.currentTimeMillis() );
 
-                // Handle dead connections
-             // @todo mongodb
-//                if( conn == null || conn.isClosed() ) {
-//                    if( RecordingManager.failedDbConnectionCount == 0 ) {
-//                        Prism.log( "Prism database error. Connection should be there but it's not. Leaving actions to log in queue." );
-//                    }
-//                    RecordingManager.failedDbConnectionCount++;
-//                    if( RecordingManager.failedDbConnectionCount > plugin.getConfig().getInt(
-//                            "prism.database.max-failures-before-wait" ) ) {
-//                        Prism.log( "Too many problems connecting. Giving up for a bit." );
-//                        scheduleNextRecording();
-//                    }
-//                    Prism.debug( "Database connection still missing, incrementing count." );
-//                    return;
-//                } else {
-//                    RecordingManager.failedDbConnectionCount = 0;
-//                }
-
-                
                 DBCollection coll = Prism.getMongoCollection();
 
                 int i = 0;

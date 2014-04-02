@@ -3,6 +3,7 @@ package me.botsko.prism;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoException;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 
 import me.botsko.elixr.MaterialAliases;
@@ -137,7 +138,7 @@ public class Prism extends JavaPlugin {
         
         // Initialize database
         try {
-            mongoClient = new MongoClient("localhost");
+            mongoClient = new MongoClient(config.getString( "prism.mongodb.hostname" ),config.getInt( "prism.mongodb.port" ));
 //            boolean auth = db.authenticate(myUserName, myPassword);
         } catch ( UnknownHostException e ) {
             e.printStackTrace();
@@ -395,8 +396,14 @@ public class Prism extends JavaPlugin {
      * @return
      */
     public static DBCollection getMongoCollection(){
-        DB db = getMongo().getDB("prism");
-        return db.getCollection("prismData");
+        DB db = null;
+        try {
+            db = getMongo().getDB(config.getString( "prism.mongodb.database" ));
+            return db.getCollection("prismData");
+        } catch( MongoException e ){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
