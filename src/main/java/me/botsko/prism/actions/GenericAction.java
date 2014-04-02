@@ -190,6 +190,26 @@ public class GenericAction implements Handler {
         this.display_time = time.format( action_time );
 
     }
+    
+    
+    /*
+     * (non-Javadoc)
+     * @see me.botsko.prism.actions.Handler#setDisplayDate(java.lang.String)
+     */
+    @Override
+    public void setUnixEpoch(Long epoch) {
+
+        this.epoch = ""+epoch;
+
+        final Date action_time = new Date( epoch * 1000 );
+
+        final SimpleDateFormat date = new SimpleDateFormat( "yy/MM/dd" );
+        this.display_date = date.format( action_time );
+
+        final SimpleDateFormat time = new SimpleDateFormat( "h:m:sa" );
+        this.display_time = time.format( action_time );
+
+    }
 
     /*
      * (non-Javadoc)

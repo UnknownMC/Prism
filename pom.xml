@@ -25,11 +25,11 @@
       <artifactId>worldedit</artifactId>
       <version>5.5.7-SNAPSHOT</version>
     </dependency>
-    <dependency>
-	<groupId>org.apache.tomcat</groupId>
-		<artifactId>tomcat-jdbc</artifactId>
-		<version>7.0.52</version>
-	</dependency>
+	<dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongo-java-driver</artifactId>
+        <version>2.11.4</version>
+    </dependency>
     <dependency>
        <groupId>org.dthielke</groupId>
        <artifactId>Herochat</artifactId>
@@ -117,8 +117,7 @@
           </filters>
           <artifactSet>
             <includes>
-            <include>org.apache.tomcat:tomcat-jdbc</include>
-            <include>org.apache.tomcat:tomcat-juli</include>
+            <include>org.mongodb:mongo-java-driver</include>
             <include>me.botsko:elixr:jar:*</include>
             </includes>
           </artifactSet>

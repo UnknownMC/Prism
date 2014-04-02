@@ -1,8 +1,5 @@
 package me.botsko.prism.actionlibs;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -42,31 +39,32 @@ public class InternalAffairs implements Runnable {
 
         Prism.log( "[InternalAffairs] Recorder is NOT active... checking database" );
 
-        // is db connection valid?
-        Connection conn = null;
-        try {
-
-            conn = Prism.dbc();
-            if( conn == null ) {
-                Prism.log( "[InternalAffairs] Pool returned NULL instead of a valid connection." );
-            } else if( conn.isClosed() ) {
-                Prism.log( "[InternalAffairs] Pool returned an already closed connection." );
-            } else if( conn.isValid( 5 ) ) {
-
-                Prism.log( "[InternalAffairs] Pool returned valid connection!" );
-
-                Prism.log( "[InternalAffairs] Restarting scheduled recorder tasks" );
-                plugin.actionRecorderTask();
-
-            }
-        } catch ( final SQLException e ) {
-            Prism.debug( "[InternalAffairs] Error: " + e.getMessage() );
-            e.printStackTrace();
-        } finally {
-            if( conn != null )
-                try {
-                    conn.close();
-                } catch ( final SQLException e ) {}
-        }
+        // @todo mongodb
+//        // is db connection valid?
+//        Connection conn = null;
+//        try {
+//
+//            conn = Prism.dbc();
+//            if( conn == null ) {
+//                Prism.log( "[InternalAffairs] Pool returned NULL instead of a valid connection." );
+//            } else if( conn.isClosed() ) {
+//                Prism.log( "[InternalAffairs] Pool returned an already closed connection." );
+//            } else if( conn.isValid( 5 ) ) {
+//
+//                Prism.log( "[InternalAffairs] Pool returned valid connection!" );
+//
+//                Prism.log( "[InternalAffairs] Restarting scheduled recorder tasks" );
+//                plugin.actionRecorderTask();
+//
+//            }
+//        } catch ( final SQLException e ) {
+//            Prism.debug( "[InternalAffairs] Error: " + e.getMessage() );
+//            e.printStackTrace();
+//        } finally {
+//            if( conn != null )
+//                try {
+//                    conn.close();
+//                } catch ( final SQLException e ) {}
+//        }
     }
 }

@@ -1,6 +1,5 @@
 package me.botsko.prism.commands;
 
-import me.botsko.elixr.TypeUtils;
 import me.botsko.prism.Prism;
 import me.botsko.prism.actionlibs.MatchRule;
 import me.botsko.prism.actionlibs.QueryParameters;
@@ -10,18 +9,12 @@ import me.botsko.prism.appliers.PrismProcessType;
 import me.botsko.prism.commandlibs.CallInfo;
 import me.botsko.prism.commandlibs.PreprocessArgs;
 import me.botsko.prism.commandlibs.SubHandler;
-import me.botsko.prism.database.mysql.ActionReportQueryBuilder;
-import me.botsko.prism.database.mysql.BlockReportQueryBuilder;
 import me.botsko.prism.utils.MiscUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -144,12 +137,13 @@ public class ReportCommand implements SubHandler {
                 + RecordingManager.failedDbConnectionCount ) );
         sender.sendMessage( Prism.messenger.playerMsg( "Actions in queue: " + ChatColor.WHITE
                 + RecordingQueue.getQueueSize() ) );
-        sender.sendMessage( Prism.messenger.playerMsg( "Pool active: " + ChatColor.WHITE + Prism.getPool().getActive() ) );
-        sender.sendMessage( Prism.messenger.playerMsg( "Pool idle: " + ChatColor.WHITE + Prism.getPool().getIdle() ) );
-        sender.sendMessage( Prism.messenger.playerMsg( "Pool active count: " + ChatColor.WHITE
-                + Prism.getPool().getNumActive() ) );
-        sender.sendMessage( Prism.messenger.playerMsg( "Pool idle count: " + ChatColor.WHITE
-                + Prism.getPool().getNumIdle() ) );
+     // @todo mongodb
+//        sender.sendMessage( Prism.messenger.playerMsg( "Pool active: " + ChatColor.WHITE + Prism.getPool().getActive() ) );
+//        sender.sendMessage( Prism.messenger.playerMsg( "Pool idle: " + ChatColor.WHITE + Prism.getPool().getIdle() ) );
+//        sender.sendMessage( Prism.messenger.playerMsg( "Pool active count: " + ChatColor.WHITE
+//                + Prism.getPool().getNumActive() ) );
+//        sender.sendMessage( Prism.messenger.playerMsg( "Pool idle count: " + ChatColor.WHITE
+//                + Prism.getPool().getNumIdle() ) );
 
         boolean recorderActive = false;
         if( plugin.recordingTask != null ) {
@@ -168,27 +162,27 @@ public class ReportCommand implements SubHandler {
         }
 
         sender.sendMessage( Prism.messenger.playerSubduedHeaderMsg( "Attempting to check connection readiness..." ) );
-
-        Connection conn = null;
-        try {
-
-            conn = Prism.dbc();
-            if( conn == null ) {
-                sender.sendMessage( Prism.messenger.playerError( "Pool returned NULL instead of a valid connection." ) );
-            } else if( conn.isClosed() ) {
-                sender.sendMessage( Prism.messenger.playerError( "Pool returned an already closed connection." ) );
-            } else if( conn.isValid( 5 ) ) {
-                sender.sendMessage( Prism.messenger.playerSuccess( "Pool returned valid connection!" ) );
-            }
-        } catch ( final SQLException e ) {
-            sender.sendMessage( Prism.messenger.playerError( "Error: " + e.getMessage() ) );
-            e.printStackTrace();
-        } finally {
-            if( conn != null )
-                try {
-                    conn.close();
-                } catch ( final SQLException ignored ) {}
-        }
+     // @todo mongodb
+//        Connection conn = null;
+//        try {
+//
+//            conn = Prism.dbc();
+//            if( conn == null ) {
+//                sender.sendMessage( Prism.messenger.playerError( "Pool returned NULL instead of a valid connection." ) );
+//            } else if( conn.isClosed() ) {
+//                sender.sendMessage( Prism.messenger.playerError( "Pool returned an already closed connection." ) );
+//            } else if( conn.isValid( 5 ) ) {
+//                sender.sendMessage( Prism.messenger.playerSuccess( "Pool returned valid connection!" ) );
+//            }
+//        } catch ( final SQLException e ) {
+//            sender.sendMessage( Prism.messenger.playerError( "Error: " + e.getMessage() ) );
+//            e.printStackTrace();
+//        } finally {
+//            if( conn != null )
+//                try {
+//                    conn.close();
+//                } catch ( final SQLException ignored ) {}
+//        }
     }
 
     /**
@@ -227,8 +221,8 @@ public class ReportCommand implements SubHandler {
         }
         final String playerName = tempName;
 
-        final BlockReportQueryBuilder reportQuery = new BlockReportQueryBuilder( plugin );
-        final String sql = reportQuery.getQuery( parameters, false );
+//        final BlockReportQueryBuilder reportQuery = new BlockReportQueryBuilder( plugin );
+//        final String sql = reportQuery.getQuery( parameters, false );
 
         final int colTextLen = 20;
         final int colIntLen = 12;
@@ -244,57 +238,57 @@ public class ReportCommand implements SubHandler {
                 call.getSender().sendMessage(
                         Prism.messenger.playerSubduedHeaderMsg( "Crafting block change report for "
                                 + ChatColor.DARK_AQUA + playerName + "..." ) );
-
-                Connection conn = null;
-                PreparedStatement s = null;
-                ResultSet rs = null;
-                try {
-
-                    conn = Prism.dbc();
-                    s = conn.prepareStatement( sql );
-                    s.executeQuery();
-                    rs = s.getResultSet();
-
-                    call.getSender().sendMessage(
-                            Prism.messenger.playerHeaderMsg( "Total block changes for " + ChatColor.DARK_AQUA
-                                    + playerName ) );
-                    call.getSender().sendMessage(
-                            Prism.messenger.playerMsg( ChatColor.GRAY + TypeUtils.padStringRight( "Block", colTextLen )
-                                    + TypeUtils.padStringRight( "Placed", colIntLen )
-                                    + TypeUtils.padStringRight( "Broken", colIntLen ) ) );
-
-                    while ( rs.next() ) {
-
-                        final String alias = Prism.getItems().getAlias( rs.getInt( 1 ), 0 );
-
-                        final int placed = rs.getInt( 2 );
-                        final int broken = rs.getInt( 3 );
-
-                        final String colAlias = TypeUtils.padStringRight( alias, colTextLen );
-                        final String colPlaced = TypeUtils.padStringRight( "" + placed, colIntLen );
-                        final String colBroken = TypeUtils.padStringRight( "" + broken, colIntLen );
-
-                        call.getSender().sendMessage(
-                                Prism.messenger.playerMsg( ChatColor.DARK_AQUA + colAlias + ChatColor.GREEN + colPlaced
-                                        + " " + ChatColor.RED + colBroken ) );
-
-                    }
-                } catch ( final SQLException e ) {
-                    e.printStackTrace();
-                } finally {
-                    if( rs != null )
-                        try {
-                            rs.close();
-                        } catch ( final SQLException ignored ) {}
-                    if( s != null )
-                        try {
-                            s.close();
-                        } catch ( final SQLException ignored ) {}
-                    if( conn != null )
-                        try {
-                            conn.close();
-                        } catch ( final SQLException ignored ) {}
-                }
+             // @todo mongodb
+//                Connection conn = null;
+//                PreparedStatement s = null;
+//                ResultSet rs = null;
+//                try {
+//
+//                    conn = Prism.dbc();
+//                    s = conn.prepareStatement( sql );
+//                    s.executeQuery();
+//                    rs = s.getResultSet();
+//
+//                    call.getSender().sendMessage(
+//                            Prism.messenger.playerHeaderMsg( "Total block changes for " + ChatColor.DARK_AQUA
+//                                    + playerName ) );
+//                    call.getSender().sendMessage(
+//                            Prism.messenger.playerMsg( ChatColor.GRAY + TypeUtils.padStringRight( "Block", colTextLen )
+//                                    + TypeUtils.padStringRight( "Placed", colIntLen )
+//                                    + TypeUtils.padStringRight( "Broken", colIntLen ) ) );
+//
+//                    while ( rs.next() ) {
+//
+//                        final String alias = Prism.getItems().getAlias( rs.getInt( 1 ), 0 );
+//
+//                        final int placed = rs.getInt( 2 );
+//                        final int broken = rs.getInt( 3 );
+//
+//                        final String colAlias = TypeUtils.padStringRight( alias, colTextLen );
+//                        final String colPlaced = TypeUtils.padStringRight( "" + placed, colIntLen );
+//                        final String colBroken = TypeUtils.padStringRight( "" + broken, colIntLen );
+//
+//                        call.getSender().sendMessage(
+//                                Prism.messenger.playerMsg( ChatColor.DARK_AQUA + colAlias + ChatColor.GREEN + colPlaced
+//                                        + " " + ChatColor.RED + colBroken ) );
+//
+//                    }
+//                } catch ( final SQLException e ) {
+//                    e.printStackTrace();
+//                } finally {
+//                    if( rs != null )
+//                        try {
+//                            rs.close();
+//                        } catch ( final SQLException ignored ) {}
+//                    if( s != null )
+//                        try {
+//                            s.close();
+//                        } catch ( final SQLException ignored ) {}
+//                    if( conn != null )
+//                        try {
+//                            conn.close();
+//                        } catch ( final SQLException ignored ) {}
+//                }
             }
         } );
     }
@@ -331,8 +325,8 @@ public class ReportCommand implements SubHandler {
         }
         final String playerName = tempName;
 
-        final ActionReportQueryBuilder reportQuery = new ActionReportQueryBuilder( plugin );
-        final String sql = reportQuery.getQuery( parameters, false );
+//        final ActionReportQueryBuilder reportQuery = new ActionReportQueryBuilder( plugin );
+//        final String sql = reportQuery.getQuery( parameters, false );
 
         final int colTextLen = 16;
         final int colIntLen = 12;
@@ -348,50 +342,50 @@ public class ReportCommand implements SubHandler {
                 call.getSender().sendMessage(
                         Prism.messenger.playerSubduedHeaderMsg( "Crafting action type report for "
                                 + ChatColor.DARK_AQUA + playerName + "..." ) );
-
-                Connection conn = null;
-                PreparedStatement s = null;
-                ResultSet rs = null;
-                try {
-
-                    conn = Prism.dbc();
-                    s = conn.prepareStatement( sql );
-                    s.executeQuery();
-                    rs = s.getResultSet();
-
-                    call.getSender().sendMessage(
-                            Prism.messenger.playerMsg( ChatColor.GRAY + TypeUtils.padStringRight( "Action", colTextLen )
-                                    + TypeUtils.padStringRight( "Count", colIntLen ) ) );
-
-                    while ( rs.next() ) {
-
-                        final String action = rs.getString( 2 );
-                        final int count = rs.getInt( 1 );
-
-                        final String colAlias = TypeUtils.padStringRight( action, colTextLen );
-                        final String colPlaced = TypeUtils.padStringRight( "" + count, colIntLen );
-
-                        call.getSender().sendMessage(
-                                Prism.messenger
-                                        .playerMsg( ChatColor.DARK_AQUA + colAlias + ChatColor.GREEN + colPlaced ) );
-
-                    }
-                } catch ( final SQLException e ) {
-                    e.printStackTrace();
-                } finally {
-                    if( rs != null )
-                        try {
-                            rs.close();
-                        } catch ( final SQLException ignored ) {}
-                    if( s != null )
-                        try {
-                            s.close();
-                        } catch ( final SQLException ignored ) {}
-                    if( conn != null )
-                        try {
-                            conn.close();
-                        } catch ( final SQLException ignored ) {}
-                }
+             // @todo mongodb
+//                Connection conn = null;
+//                PreparedStatement s = null;
+//                ResultSet rs = null;
+//                try {
+//
+//                    conn = Prism.dbc();
+//                    s = conn.prepareStatement( sql );
+//                    s.executeQuery();
+//                    rs = s.getResultSet();
+//
+//                    call.getSender().sendMessage(
+//                            Prism.messenger.playerMsg( ChatColor.GRAY + TypeUtils.padStringRight( "Action", colTextLen )
+//                                    + TypeUtils.padStringRight( "Count", colIntLen ) ) );
+//
+//                    while ( rs.next() ) {
+//
+//                        final String action = rs.getString( 2 );
+//                        final int count = rs.getInt( 1 );
+//
+//                        final String colAlias = TypeUtils.padStringRight( action, colTextLen );
+//                        final String colPlaced = TypeUtils.padStringRight( "" + count, colIntLen );
+//
+//                        call.getSender().sendMessage(
+//                                Prism.messenger
+//                                        .playerMsg( ChatColor.DARK_AQUA + colAlias + ChatColor.GREEN + colPlaced ) );
+//
+//                    }
+//                } catch ( final SQLException e ) {
+//                    e.printStackTrace();
+//                } finally {
+//                    if( rs != null )
+//                        try {
+//                            rs.close();
+//                        } catch ( final SQLException ignored ) {}
+//                    if( s != null )
+//                        try {
+//                            s.close();
+//                        } catch ( final SQLException ignored ) {}
+//                    if( conn != null )
+//                        try {
+//                            conn.close();
+//                        } catch ( final SQLException ignored ) {}
+//                }
             }
         } );
     }

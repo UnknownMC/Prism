@@ -4,7 +4,6 @@ import me.botsko.prism.Prism;
 import me.botsko.prism.commandlibs.CallInfo;
 import me.botsko.prism.commandlibs.SubHandler;
 
-import java.sql.Connection;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -72,32 +71,33 @@ public class RecorderCommand implements SubHandler {
                 // Run db tests...
                 call.getSender().sendMessage( Prism.messenger.playerMsg( "Validating database connections..." ) );
 
-                // Attempt to get db
-                Connection conn = null;
-                try {
-
-                    conn = Prism.dbc();
-                    if( conn == null || conn.isClosed() ) {
-                        call.getSender()
-                                .sendMessage(
-                                        Prism.messenger
-                                                .playerError( "Valid database connection could not be found. Check the db/console and try again." ) );
-                        return;
-                    }
-
-                    call.getSender().sendMessage( Prism.messenger.playerSuccess( "Valid connection found. Yay!" ) );
-
-                    call.getSender().sendMessage( Prism.messenger.playerMsg( "Restarting recordering tasks..." ) );
-                    plugin.actionRecorderTask();
-
-                } catch ( final Exception e ) {
-                    e.printStackTrace();
-                } finally {
-                    if( conn != null )
-                        try {
-                            conn.close();
-                        } catch ( final Exception ignored ) {};
-                }
+             // @todo mongodb
+//                // Attempt to get db
+//                Connection conn = null;
+//                try {
+//
+//                    conn = Prism.dbc();
+//                    if( conn == null || conn.isClosed() ) {
+//                        call.getSender()
+//                                .sendMessage(
+//                                        Prism.messenger
+//                                                .playerError( "Valid database connection could not be found. Check the db/console and try again." ) );
+//                        return;
+//                    }
+//
+//                    call.getSender().sendMessage( Prism.messenger.playerSuccess( "Valid connection found. Yay!" ) );
+//
+//                    call.getSender().sendMessage( Prism.messenger.playerMsg( "Restarting recordering tasks..." ) );
+//                    plugin.actionRecorderTask();
+//
+//                } catch ( final Exception e ) {
+//                    e.printStackTrace();
+//                } finally {
+//                    if( conn != null )
+//                        try {
+//                            conn.close();
+//                        } catch ( final Exception ignored ) {};
+//                }
             }
             return;
         }
