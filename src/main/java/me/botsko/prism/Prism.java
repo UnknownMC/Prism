@@ -1,5 +1,6 @@
 package me.botsko.prism;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
@@ -140,6 +141,11 @@ public class Prism extends JavaPlugin {
         try {
             mongoClient = new MongoClient(config.getString( "prism.mongodb.hostname" ),config.getInt( "prism.mongodb.port" ));
 //            boolean auth = db.authenticate(myUserName, myPassword);
+            
+            // Create indexes
+            getMongoCollection().ensureIndex( new BasicDBObject("epoch",-1) );
+            getMongoCollection().ensureIndex( new BasicDBObject("world",1).append("x",1).append("z",1) .append("y",1).append("action_id",1) );
+            
         } catch ( UnknownHostException e ) {
             e.printStackTrace();
         }

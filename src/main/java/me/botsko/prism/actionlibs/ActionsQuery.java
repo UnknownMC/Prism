@@ -85,6 +85,8 @@ public class ActionsQuery {
                 
                 BasicDBObject matcher = new BasicDBObject("$match",query);
                 
+                Prism.debug( query.toString() );
+                
                 int sortDir = parameters.getSortDirection().equals( "ASC" ) ? 1 : -1;
                 BasicDBObject sorter = new BasicDBObject( "$sort", new BasicDBObject("epoch",sortDir).append( "x", 1 ).append( "z", 1 ).append( "y", 1 ).append( "id", sortDir ) );
                 BasicDBObject limit = new BasicDBObject( "$limit", parameters.getLimit() );

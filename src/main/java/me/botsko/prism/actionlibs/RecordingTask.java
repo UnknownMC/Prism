@@ -129,7 +129,7 @@ public class RecordingTask implements Runnable {
                 
                 DBCollection coll = Prism.getMongoCollection();
                 WriteResult res = coll.insert( documents );
-                Prism.debug("Recorder logged " + res.getN() + " new actions.");
+//                Prism.debug("Recorder logged " + res.getN() + " new actions.");
 
                 // Save the current count to the queue for short historical data
                 plugin.queueStats.addRunCount( res.getN() );
