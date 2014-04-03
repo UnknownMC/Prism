@@ -85,10 +85,10 @@ public class ActionsQuery {
                 
                 BasicDBObject matcher = new BasicDBObject("$match",query);
                 
-                Prism.debug( query.toString() );
+//                Prism.debug( query.toString() );
                 
                 int sortDir = parameters.getSortDirection().equals( "ASC" ) ? 1 : -1;
-                BasicDBObject sorter = new BasicDBObject( "$sort", new BasicDBObject("epoch",sortDir).append( "x", 1 ).append( "z", 1 ).append( "y", 1 ).append( "id", sortDir ) );
+                BasicDBObject sorter = new BasicDBObject( "$sort", new BasicDBObject("epoch",sortDir).append( "x", 1 ).append( "z", 1 ).append( "y", 1 ) );
                 BasicDBObject limit = new BasicDBObject( "$limit", parameters.getLimit() );
 //                BasicDBObject group = new BasicDBObject("$group", new BasicDBObject("_id",new BasicDBObject("action","$action").append( "player", "$player" )).append( "count", new BasicDBObject("$sum", 1) ) );
                 
@@ -96,7 +96,8 @@ public class ActionsQuery {
 //                Prism.debug(group.toString());
                 
                 AggregationOutput aggregated = Prism.getMongoCollection().aggregate( matcher, sorter, limit );
-//                Prism.debug(aggregated.toString());
+                Prism.debug(aggregated.getCommand().toString());
+                
                 
                 plugin.eventTimer.recordTimedEvent( "query returned, will now build results" );
                 

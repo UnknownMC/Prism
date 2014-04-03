@@ -2,8 +2,6 @@ package me.botsko.prism.commands;
 
 import me.botsko.elixr.TypeUtils;
 import me.botsko.prism.Prism;
-import me.botsko.prism.actionlibs.ActionsQuery;
-import me.botsko.prism.actionlibs.QueryParameters;
 import me.botsko.prism.actionlibs.QueryResult;
 import me.botsko.prism.actions.Handler;
 import me.botsko.prism.commandlibs.CallInfo;
@@ -89,51 +87,27 @@ public class TeleportCommand implements SubHandler {
             }
         }
 
-        // If a record id provided, re-query the database
-        Handler destinationAction;
-        if( call.getArg( 1 ).contains( "id:" ) ) {
+        // Get stored results
+        final QueryResult results = plugin.cachedQueries.get( keyName );
 
-            // Build params
-            final QueryParameters params = new QueryParameters();
-            params.setWorld( call.getPlayer().getWorld().getName() );
-            params.setId( record_id );
-
-            // Query
-            final ActionsQuery aq = new ActionsQuery( plugin );
-            final QueryResult results = aq.lookup( params, call.getPlayer() );
-            if( results.getActionResults().isEmpty() ) {
-                call.getPlayer().sendMessage( Prism.messenger.playerError( "No records exists with this ID." ) );
-                return;
-            }
-
-            // Get the first result
-            destinationAction = results.getActionResults().get( 0 );
-
+        if( record_id > results.getActionResults().size() ) {
+            call.getPlayer().sendMessage(
+                    Prism.messenger.playerError( "No records exists at this index. Did you mean /pr tp id:"
+                            + record_id + " instead?" ) );
+            return;
         }
-        // Otherwise, look for a cached query
-        else {
 
-            // Get stored results
-            final QueryResult results = plugin.cachedQueries.get( keyName );
+        final int key = ( record_id - 1 );
 
-            if( record_id > results.getActionResults().size() ) {
-                call.getPlayer().sendMessage(
-                        Prism.messenger.playerError( "No records exists at this index. Did you mean /pr tp id:"
-                                + record_id + " instead?" ) );
-                return;
-            }
+        // Get the result index specified
+        Handler destinationAction = results.getActionResults().get( key );
 
-            final int key = ( record_id - 1 );
+        // Refresh the query time and replace
+        results.setQueryTime();
+        results.setLastTeleportIndex( record_id );
+        plugin.cachedQueries.replace( keyName, results );
 
-            // Get the result index specified
-            destinationAction = results.getActionResults().get( key );
 
-            // Refresh the query time and replace
-            results.setQueryTime();
-            results.setLastTeleportIndex( record_id );
-            plugin.cachedQueries.replace( keyName, results );
-
-        }
 
         if( destinationAction != null ) {
             final World world = plugin.getServer().getWorld( destinationAction.getWorldName() );

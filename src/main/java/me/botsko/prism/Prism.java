@@ -143,8 +143,7 @@ public class Prism extends JavaPlugin {
 //            boolean auth = db.authenticate(myUserName, myPassword);
             
             // Create indexes
-            getMongoCollection().ensureIndex( new BasicDBObject("epoch",-1) );
-            getMongoCollection().ensureIndex( new BasicDBObject("world",1).append("x",1).append("z",1) .append("y",1).append("action_id",1) );
+            getMongoCollection().ensureIndex( new BasicDBObject("epoch",-1).append("world",1).append("x",1).append("z",1) .append("y",1).append("action_id",1) );
             
         } catch ( UnknownHostException e ) {
             e.printStackTrace();
@@ -223,7 +222,6 @@ public class Prism extends JavaPlugin {
             registerParameter( new BlockParameter() );
             registerParameter( new EntityParameter() );
             registerParameter( new FlagParameter() );
-            registerParameter( new IdParameter() );
             registerParameter( new KeywordParameter() );
             registerParameter( new PlayerParameter() );
             registerParameter( new RadiusParameter() );

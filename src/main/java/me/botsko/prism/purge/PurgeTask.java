@@ -80,8 +80,8 @@ public class PurgeTask implements Runnable {
         if( spread <= 1 )
             spread = 10000;
         int newMinId = minId + spread;
-        param.setMinPrimaryKey( minId );
-        param.setMaxPrimaryKey( newMinId );
+//        param.setMinPrimaryKey( minId );
+//        param.setMaxPrimaryKey( newMinId );
 
         cycle_rows_affected = aq.delete( param );
         plugin.total_records_affected += cycle_rows_affected;

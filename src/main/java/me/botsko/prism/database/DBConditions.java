@@ -24,34 +24,19 @@ public class DBConditions {
         
         // @todo add support for include/excludes
         
-        // Action types
-        if( !parameters.getActionTypeNames().isEmpty() ){
-            query.append( "action", new BasicDBObject("$in", parameters.getActionTypeNames().keySet()) );
-        }
-        // @todo exclude internal prism stuff?
-        
-        // Players
-        if( !parameters.getPlayerNames().isEmpty() ){
-            query.append( "player", new BasicDBObject("$in", parameters.getPlayerNames().keySet()) );
-        }
-        
-        // @todo:
-
-//        parameters.getEntities()
-//        parameters.getId();
-//        parameters.getKeyword()
-        
-        // Blocks
-        if( !parameters.getBlockFilters().isEmpty() ){
-            BasicDBList or = new BasicDBList();
-            for ( final Entry<Integer, Byte> entry : parameters.getBlockFilters().entrySet() ) {
-                if( entry.getValue() == 0 ){
-                    or.add( new BasicDBObject("block_id",entry.getKey()) );
-                } else {
-                    or.add( new BasicDBObject("block_id",entry.getKey()).append( "block_subid", entry.getValue() ) );
-                }
+        // Time
+        if( !parameters.getIgnoreTime() ){
+            if( parameters.getBeforeTime() != null && parameters.getBeforeTime() > 0 ){
+                query.append( "epoch", new BasicDBObject("$lt", parameters.getBeforeTime()/1000) );
             }
-            query.append( "$or", or );
+            if( parameters.getSinceTime() != null && parameters.getSinceTime() > 0 ){
+                query.append( "epoch", new BasicDBObject("$gte", parameters.getSinceTime()/1000) );
+            }
+        }
+        
+        // World
+        if( parameters.getWorld() != null && !parameters.getWorld().isEmpty() ){
+            query.append( "world", parameters.getWorld() );
         }
         
         // Specific coords
@@ -75,22 +60,34 @@ public class DBConditions {
             query.append( "y", new BasicDBObject("$gt", minLoc.getBlockY()).append( "$lt", maxLoc.getBlockY() ) );
             query.append( "z", new BasicDBObject("$gt", minLoc.getBlockZ()).append( "$lt", maxLoc.getBlockZ() ) );
         }
-
-        // Time
-        if( !parameters.getIgnoreTime() ){
-            if( parameters.getBeforeTime() != null && parameters.getBeforeTime() > 0 ){
-                query.append( "epoch", new BasicDBObject("$lt", parameters.getBeforeTime()/1000) );
-            }
-            if( parameters.getSinceTime() != null && parameters.getSinceTime() > 0 ){
-                query.append( "epoch", new BasicDBObject("$gte", parameters.getSinceTime()/1000) );
-            }
+        
+        // Action types
+        if( !parameters.getActionTypeNames().isEmpty() ){
+            query.append( "action", new BasicDBObject("$in", parameters.getActionTypeNames().keySet()) );
         }
-
-        // World
-        if( parameters.getWorld() != null && !parameters.getWorld().isEmpty() ){
-            query.append( "world", parameters.getWorld() );
+        
+        // Players
+        if( !parameters.getPlayerNames().isEmpty() ){
+            query.append( "player", new BasicDBObject("$in", parameters.getPlayerNames().keySet()) );
         }
-
+        
+        // @todo:
+//        parameters.getEntities()
+//        parameters.getKeyword()
+        
+        // Blocks
+        if( !parameters.getBlockFilters().isEmpty() ){
+            BasicDBList or = new BasicDBList();
+            for ( final Entry<Integer, Byte> entry : parameters.getBlockFilters().entrySet() ) {
+                if( entry.getValue() == 0 ){
+                    or.add( new BasicDBObject("block_id",entry.getKey()) );
+                } else {
+                    or.add( new BasicDBObject("block_id",entry.getKey()).append( "block_subid", entry.getValue() ) );
+                }
+            }
+            query.append( "$or", or );
+        }
+        
         return query;
         
     }

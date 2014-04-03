@@ -32,9 +32,7 @@ public class QueryParameters implements Cloneable {
      * Single-value options
      */
     protected boolean allow_no_radius = false;
-    protected int id = 0;
-    protected int minId = 0;
-    protected int maxId = 0;
+    protected String id;
     protected Vector maxLoc;
     protected Vector minLoc;
     protected int parent_id = 0;
@@ -66,7 +64,7 @@ public class QueryParameters implements Cloneable {
     /**
      * @return the id
      */
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -74,41 +72,10 @@ public class QueryParameters implements Cloneable {
      * @param id
      *            the id to set
      */
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    /**
-     * 
-     * @param minId
-     */
-    public void setMinPrimaryKey(int minId) {
-        this.minId = minId;
-    }
-
-    /**
-     * 
-     * @param minId
-     */
-    public int getMinPrimaryKey() {
-        return this.minId;
-    }
-
-    /**
-     * 
-     * @param maxId
-     */
-    public void setMaxPrimaryKey(int maxId) {
-        this.maxId = maxId;
-    }
-
-    /**
-     * 
-     * @param minId
-     */
-    public int getMaxPrimaryKey() {
-        return this.maxId;
-    }
 
     /**
      * @return the entity
@@ -430,21 +397,6 @@ public class QueryParameters implements Cloneable {
      */
     public void setFoundArgs(Set<String> foundArgs) {
         this.foundArgs = foundArgs;
-    }
-
-    /**
-     * 
-     * @param id
-     */
-    public void setParentId(int id) {
-        this.parent_id = id;
-    }
-
-    /**
-	 *
-	 */
-    public int getParentId() {
-        return parent_id;
     }
 
     /**
